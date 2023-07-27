@@ -100,8 +100,7 @@ export const todosSlice = createSlice({
     editTodo: (state: TodosState, action: PayloadAction<Todo>) => {
       state.active = getSortedTodos(
         state.active
-          .filter(({ id }) => id !== action.payload.id)
-          .concat(action.payload)
+          .map((todo) => todo.id === action.payload.id ? action.payload : todo)
       );
     },
     archiveTodos: (state: TodosState) => {

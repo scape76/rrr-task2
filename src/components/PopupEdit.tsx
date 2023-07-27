@@ -43,7 +43,6 @@ const PopupEdit = () => {
   });
 
   const handleEditTodo = ({ name, content, category }: Inputs) => {
-    console.log(category);
     dispatch(
       editTodo({
         id,
