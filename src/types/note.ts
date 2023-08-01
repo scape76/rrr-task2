@@ -1,4 +1,4 @@
-export type Todo = {
+export type Note = {
   id: string;
   category: Category;
   content: string;
@@ -7,10 +7,8 @@ export type Todo = {
   name: string;
 };
 
-export enum Categories {
+export enum Category {
   IDEA = "idea",
   TASK = "task",
   THOUGHT = "thought",
 }
-
-export type Category = Categories.IDEA | Categories.TASK | Categories.THOUGHT;
