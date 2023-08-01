@@ -22,7 +22,7 @@ export default function NotesTable({ children, isArchived }: NotesTableProps) {
         <CreateNoteButton />
       </div>
       <Table>
-        <TableCaption>A list of your notes.</TableCaption>
+        <TableCaption>A list of your {isArchived ? "archived" : "active"} notes.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
