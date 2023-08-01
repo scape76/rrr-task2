@@ -1,32 +1,24 @@
-import { RootState } from "../redux/store";
-import { useAppSelector, useAppDispatch } from "../hooks/redux";
-import ListElement from "./NoteElement";
-import {
-  selectActiveNotes,
-  archiveNotes,
-  deleteNotes,
-} from "../redux/noteSlice";
-
 import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "components/ui/table";
 import CreateNoteButton from "./CreateNoteButton";
+import ToggleArchiveButton from "./ToggleArchiveButton";
+import DeleteNotesButton from "./DeleteNotesButton";
 
-const List = () => {
-  const dispatch = useAppDispatch();
-  const activeElementsList = useAppSelector((state: RootState) =>
-    selectActiveNotes(state)
-  );
+interface NotesTableProps {
+  children: React.ReactNode;
+  isArchived: boolean;
+}
 
+export default function NotesTable({ children, isArchived }: NotesTableProps) {
   return (
     <div>
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end my-2">
         <CreateNoteButton />
       </div>
       <Table>
@@ -38,16 +30,16 @@ const List = () => {
             <TableHead>Category</TableHead>
             <TableHead>Content</TableHead>
             <TableHead>Dates</TableHead>
+            <TableHead>
+              <div className="flex items-center gap-2 ml-11">
+                <ToggleArchiveButton isArchived={isArchived} />
+                <DeleteNotesButton isArchived={isArchived} />
+              </div>
+            </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {activeElementsList?.map(({ id, ...props }) => (
-            <ListElement key={id} {...props} id={id} />
-          ))}
-        </TableBody>
+        <TableBody>{children}</TableBody>
       </Table>
     </div>
   );
-};
-
-export default List;
+}

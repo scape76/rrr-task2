@@ -1,18 +1,17 @@
-import { FC } from "react";
-import type { Note } from "../types/note";
-import { removeNote, archiveNote } from "../redux/noteSlice";
-import { useAppDispatch } from "../hooks/redux";
-import { searchForDatesInContent } from "../lib/utils";
+import type { Note } from "types/note";
+import { removeNote, archiveNote, unarchiveNote } from "redux/noteSlice";
+import { useAppDispatch } from "hooks/redux";
+import { getCreatedTimeToString, searchForDatesInContent } from "lib/utils";
 import { TableCell, TableRow } from "components/ui/table";
-import { EditNoteButton } from "./EditNoteButton";
+import { EditNoteButton } from "../EditNoteButton";
 
 import { Button } from "components/ui/button";
-import { Pen, Archive, Trash2 } from "lucide-react";
-import { Icons } from "./Icons";
+import { Pen, Archive, Trash2, ArchiveRestore } from "lucide-react";
+import { Icons } from "components/Icons";
 
-const ListElement: FC<Note> = (note) => {
+export default function ArchivedNoteElement(note: Note) {
   const dispatch = useAppDispatch();
-  const { id, category, content, created, name } = note;
+  const { id, category, content, createdAt, name } = note;
   const Icon = Icons[category as keyof typeof Icons];
 
   return (
@@ -23,7 +22,9 @@ const ListElement: FC<Note> = (note) => {
           {name}
         </div>
       </TableCell>
-      <TableCell className="font-medium">{created}</TableCell>
+      <TableCell className="font-medium">
+        {getCreatedTimeToString(createdAt)}
+      </TableCell>
       <TableCell className="font-medium">{category}</TableCell>
       <TableCell className="font-medium">{content}</TableCell>
       <TableCell className="font-medium">
@@ -32,8 +33,8 @@ const ListElement: FC<Note> = (note) => {
       <TableCell className="font-medium">
         <div className="flex gap-2">
           <EditNoteButton note={note} />
-          <Button size={"icon"} onClick={() => dispatch(archiveNote(note))}>
-            <Archive className="w-4 h-4" />
+          <Button size={"icon"} onClick={() => dispatch(unarchiveNote(note))}>
+            <ArchiveRestore className="w-4 h-4" />
           </Button>
           <Button
             size={"icon"}
@@ -46,6 +47,4 @@ const ListElement: FC<Note> = (note) => {
       </TableCell>
     </TableRow>
   );
-};
-
-export default ListElement;
+}

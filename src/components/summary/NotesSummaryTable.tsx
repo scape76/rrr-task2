@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
-import { selectActiveNotes, selectArchivedNotes } from "../redux/noteSlice";
+import { selectActiveNotes, selectArchivedNotes } from "../../redux/noteSlice";
 import type { Category } from "types/note";
-import { RootState } from "../redux/store";
-import { Note } from "../types/note";
+import { RootState } from "../../redux/store";
+import { Note } from "../../types/note";
 import SummaryElement from "./SummaryElement";
 
 import {

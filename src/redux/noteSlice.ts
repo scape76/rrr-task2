@@ -5,83 +5,76 @@ import { Category, Note } from "../types/note";
 import { getCreatedTimeToString } from "lib/utils";
 
 interface NotesState {
-  active: Note[];
-  archived: Note[];
-  editedTodo: Note | null;
-  popupEditState: boolean;
-  popupCreateState: boolean;
+  notes: Note[];
 }
 
 const initialState: NotesState = {
-  active: [
+  notes: [
     {
       id: nanoid(),
       category: Category.TASK,
       content: "tomatoes, bread 3/9/2021",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "Shopping list",
+      isArchived: false,
     },
     {
       id: nanoid(),
       category: Category.THOUGHT,
       content: "build a house 21/01/2022",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "idk",
+      isArchived: false,
     },
     {
       id: nanoid(),
       category: Category.THOUGHT,
       content: "build a house 23/09/2022 24/10/2022",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "idk",
+      isArchived: false,
     },
     {
       id: nanoid(),
       category: Category.IDEA,
       content: "plant a tree",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "3",
+      isArchived: false,
     },
     {
       id: nanoid(),
       category: Category.THOUGHT,
       content: "build a house 09/23/2022 10/24/2022",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "idk",
+      isArchived: true,
     },
-  ],
-  archived: [
+
     {
       id: nanoid(),
       category: Category.THOUGHT,
       content: "build a house",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "idk",
+      isArchived: true,
     },
     {
       id: nanoid(),
       category: Category.IDEA,
       content: "run",
-      created: getCreatedTimeToString(new Date()),
-      createdInMilliseconds: Date.now(),
+      createdAt: new Date(),
       name: "idk",
+      isArchived: true,
     },
   ],
-  popupEditState: false,
-  editedTodo: null,
-  popupCreateState: false,
 };
 
-const getSortedNotes = (Notes: Note[]) =>
-  Notes.sort(
-    (todoA, todoB) => todoB.createdInMilliseconds - todoA.createdInMilliseconds
+function sortNotesByDate(notes: Note[]) {
+  return [...notes].sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
   );
+}
 
 export const notesSlice = createSlice({
   name: "notes",
@@ -91,36 +84,45 @@ export const notesSlice = createSlice({
       state: NotesState,
       action: PayloadAction<Pick<Note, "category" | "name" | "content">>
     ) => {
-      state.active = [
+      state.notes = [
         {
           id: nanoid(),
-          created: getCreatedTimeToString(new Date()),
-          createdInMilliseconds: Date.now(),
+          createdAt: new Date(),
+          isArchived: false,
           ...action.payload,
         },
-        ...state.active,
+        ...state.notes,
       ];
     },
     removeNote: (state: NotesState, action: PayloadAction<Note["id"]>) => {
-      state.active = state.active.filter(({ id }) => id !== action.payload);
+      state.notes = state.notes.filter(({ id }) => id !== action.payload);
     },
     archiveNote: (state: NotesState, action: PayloadAction<Note>) => {
-      state.active = state.active.filter(({ id }) => id !== action.payload.id);
-      state.archived = state.archived.concat(action.payload);
+      state.notes = state.notes.map((note) =>
+        note.id === action.payload.id ? { ...note, isArchived: true } : note
+      );
+    },
+    unarchiveNote: (state: NotesState, action: PayloadAction<Note>) => {
+      state.notes = state.notes.map((note) =>
+        note.id === action.payload.id ? { ...note, isArchived: false } : note
+      );
     },
     editNote: (state: NotesState, action: PayloadAction<Note>) => {
-      state.active = getSortedNotes(
-        state.active.map((note) =>
-          note.id === action.payload.id ? action.payload : note
-        )
+      state.notes = state.notes.map((note) =>
+        note.id === action.payload.id ? action.payload : note
       );
     },
     archiveNotes: (state: NotesState) => {
-      state.archived = getSortedNotes(state.archived.concat(state.active));
-      state.active = [];
+      state.notes = state.notes.map((note) => ({ ...note, isArchived: true }));
     },
-    deleteNotes: (state: NotesState) => {
-      state.active = [];
+    unarchiveNotes: (state: NotesState) => {
+      state.notes = state.notes.map((note) => ({ ...note, isArchived: false }));
+    },
+    deleteActiveNotes: (state: NotesState) => {
+      state.notes = state.notes.filter((note) => note.isArchived);
+    },
+    deleteArchivedNotes: (state: NotesState) => {
+      state.notes = state.notes.filter((note) => !note.isArchived);
     },
   },
 });
@@ -130,14 +132,16 @@ export const {
   removeNote,
   archiveNote,
   archiveNotes,
-  deleteNotes,
+  unarchiveNote,
+  unarchiveNotes,
   editNote,
+  deleteActiveNotes,
+  deleteArchivedNotes,
 } = notesSlice.actions;
 
-export const selectActiveNotes = (state: RootState) => state.notes.active;
-export const selectArchivedNotes = (state: RootState) => state.notes.archived;
-export const selectEditedNote = (state: RootState) => state.notes.editedTodo;
-export const selectPopupEditState = (state: RootState) =>
-  state.notes.popupEditState;
+export const selectActiveNotes = (state: RootState) =>
+  sortNotesByDate(state.notes.notes).filter((note) => !note.isArchived);
+export const selectArchivedNotes = (state: RootState) =>
+  sortNotesByDate(state.notes.notes).filter((note) => note.isArchived);
 
 export default notesSlice.reducer;

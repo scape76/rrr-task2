@@ -35,7 +35,7 @@ interface EditNoteFormProps {
 
 const EditNoteForm: React.FC<EditNoteFormProps> = ({ note, setIsOpen }) => {
   const dispatch = useAppDispatch();
-  const { id, category, content, created, createdInMilliseconds, name } = note;
+  const { id, category, content, createdAt, name, isArchived } = note;
 
   const form = useForm<Inputs>({
     resolver: zodResolver(noteSchema),
@@ -54,8 +54,8 @@ const EditNoteForm: React.FC<EditNoteFormProps> = ({ note, setIsOpen }) => {
         category: data.category as Category,
         content: data.content,
         name: data.name,
-        created,
-        createdInMilliseconds,
+        createdAt,
+        isArchived,
       })
     );
   }

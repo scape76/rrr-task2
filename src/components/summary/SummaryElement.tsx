@@ -1,8 +1,7 @@
 import { FC } from "react";
 import type { Category } from "types/note";
 import { TableCell, TableRow } from "components/ui/table";
-import { Icons } from "./Icons";
-import type { LucideIcon } from "lucide-react";
+import { Icons } from "components/Icons";
 
 interface SummaryElementProps {
   category: Category;
