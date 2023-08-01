@@ -2,6 +2,7 @@ import {
   Table,
   TableBody,
   TableCaption,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -10,13 +11,19 @@ import { Button } from "./Button";
 import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
 import { Icons } from "components/Icons";
 import NoteElementList from "./NoteElementList";
+import { Note } from "types/note";
 
 interface NotesTableProps {
-  children: React.ReactNode;
+  notes: Note[];
   isArchived: boolean;
+  isLoading: boolean;
 }
 
-export default function NotesTable({ children, isArchived }: NotesTableProps) {
+export default function NotesTable({
+  notes,
+  isArchived,
+  isLoading,
+}: NotesTableProps) {
   return (
     <div>
       <div className="w-full flex justify-end my-2">
@@ -53,7 +60,21 @@ export default function NotesTable({ children, isArchived }: NotesTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <NoteElementList isArchived={isArchived}/>
+          {notes.length ? (
+            notes.map((note) => (
+              <NoteElementList
+                {...note}
+                isArchived={isArchived}
+                isLoading={isLoading}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
