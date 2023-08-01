@@ -1,10 +1,9 @@
-import "../styles/App.css";
-import Chart from "./Chart";
+import Dashboard from "./Dashboard";
 
 function App() {
   return (
-    <div className="container">
-      <Chart />;
+    <div className="container max-w-5xl">
+      <Dashboard />
     </div>
   );
 }

@@ -1,4 +1,9 @@
-import { Categories } from "types/todo";
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export const getCreatedTimeToString = (date: Date): string => {
   const months = [
@@ -17,16 +22,6 @@ export const getCreatedTimeToString = (date: Date): string => {
   ];
 
   return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-};
-
-export const getCategoryIcon = (category: Categories) => {
-  if (category === Categories.TASK) {
-    return "fa-solid fa-list-check";
-  }
-  if (category === Categories.THOUGHT) {
-    return "fa-solid fa-brain";
-  }
-  return "fa-regular fa-lightbulb";
 };
 
 export const searchForDatesInContent = (str: string): string =>

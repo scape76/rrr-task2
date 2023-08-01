@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const todoSchema = z.object({
+export const noteSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Please, name the todo" })
