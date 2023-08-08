@@ -57,7 +57,6 @@ export const Ghost: Story = {
   },
 };
 
-
 export const Large: Story = {
   args: {
     size: "lg",
@@ -78,3 +77,8 @@ export const Icon: Story = {
   },
 };
 
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
